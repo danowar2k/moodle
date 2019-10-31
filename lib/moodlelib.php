@@ -4054,7 +4054,8 @@ function create_user_record($username, $password, $auth = 'manual') {
     // Trigger event.
     \core\event\user_created::create_from_userid($newuser->id)->trigger();
 
-    return $user;
+    // User data could have changed after event callbacks, so fetch the user data again before returning.
+    return get_complete_user_data('id', $newuser->id);
 }
 
 /**
