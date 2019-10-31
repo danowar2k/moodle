@@ -46,6 +46,7 @@ class mod_wiki_create_form extends moodleform {
         $mform->addElement('text', 'pagetitle', get_string('newpagetitle', 'wiki'), $textoptions);
         $mform->setType('pagetitle', PARAM_TEXT);
         $mform->addRule('pagetitle', get_string('required'), 'required', null, 'client');
+        $mform->addRule('pagetitle', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
         if ($forceformat) {
             $mform->addElement('hidden', 'pageformat', $defaultformat);
