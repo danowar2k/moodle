@@ -75,6 +75,13 @@ class mod_wiki_mod_form extends moodleform_mod {
         $mform->setType('firstpagetitle', PARAM_TEXT);
         if (empty($this->_instance)) {
             $mform->addRule('firstpagetitle', $required, 'required', null, 'client');
+            $mform->addRule(
+                'firstpagetitle',
+                get_string('maximumchars', '', 255),
+                'maxlength',
+                255,
+                'client'
+            );
         }
 
         // Format.
