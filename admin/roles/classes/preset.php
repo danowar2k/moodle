@@ -182,17 +182,17 @@ class core_role_preset {
         }
 
         $info['name'] = self::get_node_value($dom, '/role/name');
-        if (isset($value)) {
+        if (isset($info['name'])) {
             $info['name'] = clean_param($info['name'], PARAM_TEXT);
         }
 
         $info['description'] = self::get_node_value($dom, '/role/description');
-        if (isset($value)) {
+        if (isset($info['description'])) {
             $info['description'] = clean_param($info['description'], PARAM_CLEANHTML);
         }
 
         $info['archetype'] = self::get_node_value($dom, '/role/archetype');
-        if (isset($value)) {
+        if (isset($info['archetype'])) {
             $archetypes = get_role_archetypes();
             if (!isset($archetypes[$info['archetype']])) {
                 $info['archetype'] = null;
