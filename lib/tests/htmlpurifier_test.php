@@ -506,4 +506,79 @@ final class htmlpurifier_test extends \basic_testcase {
                 '</div>'
             ]];
     }
+
+    /**
+     * Verify that details and summary aren't cleaned.
+     *
+     * @dataProvider details_summary_tags_provider
+     * @covers ::purify_html
+     * @param string $text text to purify
+     * @param string $expected expected purification result
+     */
+    public function test_details_summary_tags(string $text, string $expected): void {
+        $result = purify_html($text);
+        $this->assertSame($expected, $result);
+    }
+
+    /**
+     * Test cases for the test_details_summary_tags test.
+     */
+    public static function details_summary_tags_provider(): array {
+        return [
+            'Simple details + summary without attributes' => [
+                '<details><summary>Some summary</summary>And now the expandable details</details>',
+                '<details><summary>Some summary</summary>And now the expandable details</details>',
+            ],
+            'details tag with valueless open attribute, expecting XHTML transformation' => [
+                '<details open><summary>Some summary</summary>And now the already expanded details</details>',
+                '<details open=""><summary>Some summary</summary>And now the already expanded details</details>',
+            ],
+            'details with common attributes' => [
+                '<details class="someclass" style="background:#ffe7e8;">'
+                .'<summary>Some summary</summary>'
+                .'And now the expandable details</details>',
+                '<details class="someclass" style="background:#ffe7e8;">'
+                .'<summary>Some summary</summary>'
+                .'And now the expandable details</details>',
+            ],
+            'details tag with name attribute' => [
+                '<details name="same"><summary>first</summary>Details of first</details>'
+                .'<details name="same"><summary>second</summary>Details of second</details>',
+                '<details name="same"><summary>first</summary>Details of first</details>'
+                .'<details name="same"><summary>second</summary>Details of second</details>',
+            ],
+            'multiple details with same name and one open' => [
+                '<details name="same"><summary>first</summary>Details of first</details>'
+                .'<details name="same" open><summary>second</summary>Details of open second</details>',
+                '<details name="same"><summary>first</summary>Details of first</details>'
+                .'<details name="same" open=""><summary>second</summary>Details of open second</details>',
+            ],
+            'details with summary and nested elements' => [
+                '<details><summary>Some summary</summary>'
+                .'<p>The expandable details with <a href="http://example.com">a link</a> and <strong>strong text</strong>.</p>'
+                .'</details>',
+                '<details><summary>Some summary</summary>'
+                .'<p>The expandable details with <a href="http://example.com">a link</a> and <strong>strong text</strong>.</p>'
+                .'</details>',
+            ],
+            'details with some flow content and heading content inside summary' => [
+                '<details><summary><h3>Heading</h3></summary>'
+                .'<dl>'
+                .'<dt>Transfer rate:</dt> <dd>452KB/s</dd>'
+                .'<dt>Local filename:</dt> <dd>/home/rpausch/raycd.m4v</dd>'
+                .'<dt>Remote filename:</dt> <dd>/var/www/lectures/raycd.m4v</dd>'
+                .'<dt>Duration:</dt> <dd>01:16:27</dd>'
+                .'</dl>'
+                .'</details>',
+                '<details><summary><h3>Heading</h3></summary>'
+                .'<dl>'
+                .'<dt>Transfer rate:</dt> <dd>452KB/s</dd>'
+                .'<dt>Local filename:</dt> <dd>/home/rpausch/raycd.m4v</dd>'
+                .'<dt>Remote filename:</dt> <dd>/var/www/lectures/raycd.m4v</dd>'
+                .'<dt>Duration:</dt> <dd>01:16:27</dd>'
+                .'</dl>'
+                .'</details>',
+            ],
+        ];
+    }
 }

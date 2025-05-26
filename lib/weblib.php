@@ -1078,7 +1078,7 @@ function purify_html($text, $options = array()) {
         $config = HTMLPurifier_Config::createDefault();
 
         $config->set('HTML.DefinitionID', 'moodlehtml');
-        $config->set('HTML.DefinitionRev', 7);
+        $config->set('HTML.DefinitionRev', 8);
         $config->set('CSS.Proprietary', true);
         $config->set('Cache.SerializerPath', $cachedir);
         $config->set('Cache.SerializerPermissions', $CFG->directorypermissions);
@@ -1160,6 +1160,13 @@ function purify_html($text, $options = array()) {
                 'label' => 'Text',
                 'default' => 'Bool',
             ]);
+            // See https://html.spec.whatwg.org/#the-details-element.
+            $def->addElement('details', 'Block', 'Flow', 'Common', [
+                'open' => 'Bool',
+                'name' => 'Text',
+            ]);
+            // See https://html.spec.whatwg.org/#the-summary-element.
+            $def->addElement('summary', 'Inline', 'Flow', 'Common');
 
             // Use the built-in Ruby module to add annotation support.
             $def->manager->addModule(new HTMLPurifier_HTMLModule_Ruby());
