@@ -235,11 +235,11 @@ final class repeated_restore_test extends advanced_testcase {
     }
 
     /**
-     * Return a list of qtypes with valid generators in their helper class.
+     * Return a list of qtype test questions with valid generators in their helper class.
      *
-     * This will check all installed qtypes for a test helper class, then find a defined test question which has a corresponding
-     * form_data method and return it. If the helper doesn't have a form_data method for any test question, it will return a
-     * null test question name for that qtype.
+     * This will check all installed qtypes for a test helper class, find all defined test questions which have a corresponding
+     * form_data method and return those. If the helper doesn't have a form_data method for a test question, it will return a
+     * null test question name for that qtype test question, so that missing form_data methods are easier identified.
      *
      * @return array
      */
@@ -260,17 +260,16 @@ final class repeated_restore_test extends advanced_testcase {
                 continue;
             }
             $helper = new $helperclass();
-            $testquestion = null;
             foreach ($helper->get_test_questions() as $question) {
+                $testquestion = null;
                 if (method_exists($helper, "get_{$qtype->name}_question_form_data_{$question}")) {
                     $testquestion = $question;
-                    break;
                 }
+                $generators[$qtype->name . '-' . $question] = [
+                    'qtype' => $qtype->name,
+                    'testquestion' => $testquestion,
+                ];
             }
-            $generators[$qtype->name] = [
-                'qtype' => $qtype->name,
-                'testquestion' => $testquestion,
-            ];
         }
         return $generators;
     }
@@ -287,7 +286,7 @@ final class repeated_restore_test extends advanced_testcase {
         global $DB, $USER;
         if (is_null($testquestion)) {
             $this->markTestSkipped(
-                "Cannot test qtype_{$qtype} as there is no test question with a form_data method in the " .
+                "Cannot test qtype_{$qtype} test question as there is no form_data method for it in the " .
                 "test helper class."
             );
         }
@@ -371,7 +370,7 @@ final class repeated_restore_test extends advanced_testcase {
         global $DB, $USER;
         if (is_null($testquestion)) {
             $this->markTestSkipped(
-                "Cannot test qtype_{$qtype} as there is no test question with a form_data method in the " .
+                "Cannot test qtype_{$qtype} test question as there is no form_data method for it in the " .
                 "test helper class."
             );
         }
@@ -440,7 +439,7 @@ final class repeated_restore_test extends advanced_testcase {
         global $DB, $USER;
         if (is_null($testquestion)) {
             $this->markTestSkipped(
-                "Cannot test qtype_{$qtype} as there is no test question with a form_data method in the " .
+                "Cannot test qtype_{$qtype} test question as there is no form_data method for it in the " .
                     "test helper class."
             );
         }
@@ -509,7 +508,7 @@ final class repeated_restore_test extends advanced_testcase {
         global $DB, $USER;
         if (is_null($testquestion)) {
             $this->markTestSkipped(
-                "Cannot test qtype_{$qtype} as there is no test question with a form_data method in the " .
+                "Cannot test qtype_{$qtype} test question as there is no form_data method for it in the " .
                 "test helper class."
             );
         }
@@ -612,7 +611,7 @@ final class repeated_restore_test extends advanced_testcase {
         global $DB, $USER;
         if (is_null($testquestion)) {
             $this->markTestSkipped(
-                "Cannot test qtype_{$qtype} as there is no test question with a form_data method in the " .
+                "Cannot test qtype_{$qtype} test question as there is no form_data method for it in the " .
                     "test helper class."
             );
         }
